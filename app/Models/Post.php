@@ -15,17 +15,31 @@ class Post extends Model
     use Sluggable;
 
     protected $fillable = [
-        'job_title',
         'company_id',
+        'job_title',
         'city',
         'status',
+        "district",
+        "remotable",
+        "can_parttime",
+        "min_salary",
+        "max_salary",
+        "currency_salary",
+        "requirement",
+        "start_date",
+        "end_date",
+        "number_applicants",
+        "status",
+        "is_pinned",
+        "slug",
     ];
     // protected $appends = ['currency_salary_code'];
     protected static function booted()
     {
         static::creating(static function ($object) {
-            // $object->user_id = auth()->id();
-            $object->user_id = 1;
+             // $object->user_id = auth()->id();
+             $object->user_id = 1;
+             $object->status = 1;
         });
     }
     public function sluggable()

@@ -2,63 +2,110 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Throwable;
-use App\Models\Post;
-use App\Imports\PostsImport;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use App\Enums\ObjectLanguageTypeEnum;
+use App\Enums\PostCurrencySalaryEnum;
+use App\Enums\PostRemotableEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ResponseTrait;
+use App\Http\Controllers\SystemConfigController;
+use App\Http\Requests\Post\StoreRequest;
+use App\Imports\PostImport;
+use App\Models\Company;
+use App\Models\ObjectLanguage;
+use App\Models\Post;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Enums\PostCurrencySalaryEnum;
-use App\Http\Controllers\ResponseTrait;
-use App\Http\Requests\Post\StoreRequest;
+use Throwable;
 
 class PostController extends Controller
 {
     use ResponseTrait;
+
     private object $model;
     private string $table;
-    /**
-     * Class constructor.
-     */
+
     public function __construct()
     {
         $this->model = Post::query();
-        $this->table = (new Post)->getTable();
+        $this->table = (new Post())->getTable();
 
-        View::share('title', ucfirst($this->table));
+        View::share('title', ucwords($this->table));
         View::share('table', $this->table);
     }
+
     public function index()
     {
-
         return view('admin.posts.index');
     }
+
     public function create()
     {
-        $currencies = PostCurrencySalaryEnum::asArray();
+        $configs = SystemConfigController::getAndCache();
+
         return view('admin.posts.create', [
-            'currencies' => $currencies
+            'currencies' => $configs['currencies'],
+            'countries'  => $configs['countries'],
         ]);
     }
+
+
+
     public function store(StoreRequest $request)
     {
-            return ($request ->all());
-    }
-    public function importCsv(Request $request)
-    {
+        // khái niện Transaction: nếu toàn bộ thành công hết thì commit(gửi lên) còn không sẽ quay ngược lại
+        DB::beginTransaction();
+        try {
+            $arr = $request->only([
+                'job_title',
+                'city',
+                "district",
+                "min_salary",
+                "max_salary",
+                "currency_salary",
+                "requirement",
+                "start_date",
+                "end_date",
+                "number_applicants",
+                "slug",
+            ]);
 
-        Excel::import(new PostsImport, $request->file('file'));
-        // try {
-        //     $levels = $request->input('levels');
-        //     $file   = $request->file('file');
+            $companyName = $request->get('company');
 
-        //     Excel::import(new PostsImport($levels), $file);
+            if (!empty($companyName)) {
+                $arr['company_id'] = Company::firstOrCreate(['name' => $companyName])->id;
+            }
+            if ($request->has('remotables')) {
+                $remotables = $request->get('remotables');
+                if (!empty($remotables['remote']) && !empty($remotables['office'])) {
+                    $arr['remotable'] = PostRemotableEnum::DYNAMIC;
+                } elseif (!empty($remotables['remote'])) {
+                    $arr['remotable'] = PostRemotableEnum::REMOTE_ONLY;
+                } else {
+                    $arr['remotable'] = PostRemotableEnum::OFFICE_ONLY;
+                }
+            }
+            if ($request->has('can_parttime')) {
+                $arr['can_parttime'] = 1;
+            }
+            $post      = Post::create($arr);
+            $languages = $request->get('languages');
 
-        //     return $this->successResponse();
-        // } catch (Throwable $e) {
-        //     return $this->errorResponse();
-        // }
+            foreach ($languages as $language) {
+                ObjectLanguage::create([
+                    'language_id' => $language,
+                    'object_id'   => $post->id,
+                    'type'        => ObjectLanguageTypeEnum::POST,
+                ]);
+            }
+
+            DB::commit();
+            return $this->successResponse();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return $this->errorResponse();
+        }
     }
 }

@@ -13,7 +13,7 @@
     <!-- App css -->
     <link href="{{ asset('css/icons.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/app-creative-dark.min.css') }}" rel="stylesheet" type="text/css">
-
+    
 </head>
 
 <body class="authentication-bg pb-0" data-layout-config='{"darkMode":false}'>
@@ -62,7 +62,7 @@
                                             class="mdi mdi-github-circle"></i></a>
                                 </li>
                                 <li class="list-inline-item">
-                                    <a href="#}}"
+                                    <a href=""
                                         class="social-list-item border-info text-info"><i
                                             class="mdi mdi-gitlab"></i></a>
                                 </li>

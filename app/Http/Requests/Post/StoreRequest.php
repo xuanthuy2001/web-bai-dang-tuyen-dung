@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Post;
 
-use Illuminate\Validation\Rule;
-use App\Enums\CompanyCountryEnum;
 use App\Enums\PostCurrencySalaryEnum;
+use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -19,22 +19,21 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => [
+            'company'           => [
+                'string',
+                'nullable',
+            ],
+            'languages'         => [
+                'required',
+                'array',
+                'filled',
+            ],
+            'city'              => [
                 'required',
                 'filled',
                 'string',
-                'min:0',
             ],
-            'country' => [
-                'required',
-                'string',
-                Rule::in(CompanyCountryEnum::getKeys()),
-            ],
-            'city' => [
-                'required',
-                'string',
-            ],
-            'distinct' => [
+            'district'          => [
                 'nullable',
                 'string',
             ],
@@ -48,6 +47,13 @@ class StoreRequest extends FormRequest
                 'numeric',
                 'min:1',
             ],
+            'remotables'        => [
+                'required',
+                'array',
+            ],
+            'is_parttime'       => [
+                'nullable',
+            ],
             'start_date'        => [
                 'nullable',
                 'date',
@@ -58,7 +64,7 @@ class StoreRequest extends FormRequest
                 'date',
                 'after:start_date',
             ],
-            'title'             => [
+            'job_title'         => [
                 'required',
                 'string',
                 'filled',
@@ -73,33 +79,8 @@ class StoreRequest extends FormRequest
                 'max:255',
                 Rule::unique(Post::class),
             ],
-            'address' => [
-                'nullable',
-                'string',
-            ],
-            'address2' => [
-                'nullable',
-                'string',
-            ],
-            'zipcode' => [
-                'nullable',
-                'string',
-            ],
-            'phone' => [
-                'nullable',
-                'string',
-            ],
-            'email' => [
-                'nullable',
-                'string',
-            ],
-            'logo' => [
-                'nullable',
-                'file',
-                'image',
-                'max:5000',
-            ],
         ];
+
         $rules['min_salary'] = [
             'nullable',
             'numeric',
@@ -107,6 +88,7 @@ class StoreRequest extends FormRequest
         if (!empty($this->max_salary)) {
             $rules['min_salary'][] = 'lt:max_salary';
         }
+
         $rules['max_salary'] = [
             'nullable',
             'numeric',
@@ -114,7 +96,7 @@ class StoreRequest extends FormRequest
         if (!empty($this->min_salary)) {
             $rules['max_salary'][] = 'gt:min_salary';
         }
-        
+
         return $rules;
     }
 }
