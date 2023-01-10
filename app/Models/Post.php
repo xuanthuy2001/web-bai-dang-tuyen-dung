@@ -6,7 +6,8 @@ use App\Enums\PostCurrencySalaryEnum;
 use App\Enums\PostStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-use Spatie\Sluggable\SlugOptions;
+use Illuminate\Database\Eloquent\Relations\MorphToMany as MorphToManyAlias;
+//use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
@@ -42,7 +43,7 @@ class Post extends Model
              $object->status = 1;
         });
     }
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [
@@ -65,4 +66,19 @@ class Post extends Model
     //         ->generateSlugsFrom('name')
     //         ->saveSlugsTo('slug');
     // }
+    public function language(): MorphToManyAlias
+    {
+        // $related: bảng cần liên kết tới
+        // $name :khi truyền name vào nó sẽ auto chuyển thành $name_type để biết bảng trung gian này quy định cho bảng nào
+        // $table :bảng trung gian
+        // $foreignPivotKey: khóa ngoại của bảng trung gian với bảng hiện tại
+        // $relatedPivotKey: khóa ngoại của bảng trung gian với bảng cân liên kết
+        return $this->morphToMany(
+            Language::class,
+                'object',
+            ObjectLanguage::class,
+            'object_id',
+            'language_id',
+        );
+    }
 }

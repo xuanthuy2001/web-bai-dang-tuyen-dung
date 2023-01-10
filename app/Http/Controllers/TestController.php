@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\File;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Company;
 use App\Models\Language;
 use App\Enums\FileTypeEnum;
 use Illuminate\Http\Request;
@@ -27,6 +27,10 @@ class TestController extends Controller
         View::share('title', ucfirst($this->table));
         View::share('table', $this->table);
     }
+    public function test2()
+    {
+
+    }
     public function test()
     {
         // Phương thức combine hợp nhất key của một collection với value của một mảng hoặc collection khác:
@@ -39,14 +43,14 @@ class TestController extends Controller
         $collection2->contains('Desk'); // true
         $collection2->contains('New York'); // false
 
-        // kiểm tra cặp key-value có tồn tại trong colection hay không 
+        // kiểm tra cặp key-value có tồn tại trong colection hay không
         $collection3 = collect([
             ['product' => 'Desk', 'price' => 200],
             ['product' => 'Chair', 'price' => 100],
         ]);
         $collection3->contains('product', 'Desk'); // true
 
-        // phường thưc except() => loại trừ 
+        // phương thưc except() => loại trừ
         $collection4 = collect(['product_id' => 1, 'name' => 'Desk', 'price' => 100, 'discount' => false]);
         $filtered  = $collection4->except('price')->all();  //array:3 [▼"product_id" => 1"name" => "Desk""discount" => false]
 
@@ -68,11 +72,6 @@ class TestController extends Controller
             ['school' => 'Arkansas'],
             ['age' => 28]
         ]);
-        dd($dataUser);
-        $flattened = $dataUser->all->flatMap(function ($values) {
-            return array_map('strtoupper', $values);
-        });
-
-        dd($flattened);
     }
+
 }

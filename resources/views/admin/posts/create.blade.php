@@ -8,7 +8,7 @@
         left: 90px;
     }
 
-    input[data-switch] + label {
+input[data-switch] + label {
         width: 110px;
     }
 </style>
@@ -37,8 +37,8 @@
                             </div>
                             <div class="form-group col-6">
                                 <label>District</label>
-                                <select class="form-control select-district" name="district"
-                                        id='select-district'></select>
+                                <label for='select-district'></label><select class="form-control select-district" name="district"
+                                                                             id='select-district'></select>
                             </div>
                         </div>
                         <div class="form-row">

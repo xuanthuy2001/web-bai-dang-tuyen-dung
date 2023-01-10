@@ -8,13 +8,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
 {
-   
-    public function authorize()
+
+    public function authorize(): bool
     {
         return true;
     }
 
-    
+
     public function rules():array
     {
         return [
@@ -62,7 +62,7 @@ class StoreRequest extends FormRequest
                 'file',
                 'image',
                 'max:5000',
-            ],   
+            ],
         ];
     }
 }
