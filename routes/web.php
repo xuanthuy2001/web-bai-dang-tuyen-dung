@@ -25,3 +25,11 @@ Route::get('/auth/callback/{provider}', [AuthController::class, 'callback'])->na
 Route::get('/', function () {
     return view('layout.master');
 })->name('welcome');
+
+Route::get('/language/{locale}', function ($locale) {
+    if (!in_array($locale, config('app.locales'))) {
+        $locale = config('app.fallback_locale');
+    }
+    session()->put('locale', $locale);
+    return redirect()->back();
+})->name('language');

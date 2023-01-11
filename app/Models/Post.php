@@ -6,6 +6,7 @@ use App\Enums\PostCurrencySalaryEnum;
 use App\Enums\PostStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany as MorphToManyAlias;
 //use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -80,5 +81,17 @@ class Post extends Model
             'object_id',
             'language_id',
         );
+    }
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+    public function getLocationAttribute(): string
+    {
+        if(!empty($this->district)){
+            return $this->district . ' - ' . $this->city;
+        }
+
+        return $this->city;
     }
 }

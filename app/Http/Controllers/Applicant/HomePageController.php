@@ -9,7 +9,21 @@ class HomePageController extends Controller
 {
     public function index()
     {
-         $posts = Post::with('language')->paginate();
+    //    dd(session()->get('locale'));
+    //    app()->setLocale('vi');
+         $posts = Post::with([
+             'language',
+             'company'=>function($q)
+             {
+                 return $q->select([
+                     'id',
+                     'name',
+                     'logo'
+                 ]);
+             }
+         ])
+        ->latest()->paginate(2);
+        // dd(session()->get('locale'));
        return view('applicant.index',compact('posts'));
     }
 }
