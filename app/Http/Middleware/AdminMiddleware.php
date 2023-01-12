@@ -19,9 +19,11 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // if (!isAdmin()) {
-        //     return redirect()->route('login');
-        // }
+        if (!auth()->check() || user()->role !== UserRoleEnum::ADMIN) {
+            return redirect()->route('login');
+        }
+
+        return $next($request);
 
         return $next($request);
     }

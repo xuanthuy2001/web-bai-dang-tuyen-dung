@@ -8,3 +8,10 @@ if (!function_exists('getRoleByKey')) {
         return strtolower(UserRoleEnum::getKeys((int)$key)[0]);
     }
 }
+
+if (!function_exists('user')) {
+    function user(): ?object
+    {
+        return auth()->user();
+    }
+}

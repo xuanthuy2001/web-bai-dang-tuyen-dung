@@ -9,24 +9,38 @@ use App\Models\Language;
 use App\Enums\FileTypeEnum;
 use App\Enums\PostStatusEnum;
 use Maatwebsite\Excel\Concerns\ToArray;
+use App\Enums\PostRemotableEnum;
 
 class PostsImport implements ToArray
 {
     public function array(array $array): void
     {
-        dd($array);
         foreach ($array as $each) {
             try {
+                $remotable   = PostRemotableEnum::OFFICE_ONLY;
                 $companyName = $each['cong_ty'];
                 $language    = $each['ngon_ngu'];
                 $city        = $each['dia_diem'];
-                $link        = $each['link'];
+                if ($city === 'Nhiều') {
+                    $city = null;
+                } elseif ($city === 'Remote') {
+                    $remotable = PostRemotableEnum::REMOTE_ONLY;
+                    $city      = null;
+                } else {
+                    $city = str_replace([
+                        'HN',
+                        'HCM',
+                    ], [
+                        'Hà Nội',
+                        'Hồ Chí Minh',
+                    ], $city);
+                }
+                $link = $each['link'];
 
                 if (!empty($companyName)) {
                     $companyId = Company::firstOrCreate([
                         'name' => $companyName,
                     ], [
-                        'city'    => $city,
                         'country' => 'Vietnam',
                     ])->id;
                 } else {
@@ -39,6 +53,7 @@ class PostsImport implements ToArray
                     'company_id' => $companyId,
                     'city'       => $city,
                     'status'     => PostStatusEnum::ADMIN_APPROVED,
+                    'remotable'  => $remotable,
                 ]);
 
                 $languages = explode(',', $language);
@@ -54,7 +69,7 @@ class PostsImport implements ToArray
                     'type'    => FileTypeEnum::JD,
                 ]);
             } catch (\Throwable $e) {
-                dd($each);
+                dd($each, $e);
             }
         }
     }

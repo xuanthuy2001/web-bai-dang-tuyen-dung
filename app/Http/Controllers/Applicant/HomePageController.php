@@ -11,7 +11,7 @@ class HomePageController extends Controller
     {
     //    dd(session()->get('locale'));
     //    app()->setLocale('vi');
-         $posts = Post::with([
+         $posts = Post::query()->with([
              'language',
              'company'=>function($q)
              {

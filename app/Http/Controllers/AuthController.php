@@ -37,49 +37,19 @@ class AuthController extends Controller
         if (is_null($user)) {
             $user        = new User();
             $user->email = $data->getEmail();
-            $user->role  = UserRoleEnum::APPLICANT;
             $checkExist  = false;
         }
-
         $user->name   = $data->getName();
         $user->avatar = $data->getAvatar();
-
-        auth()->login($user, true);
+        $user->role   = UserRoleEnum::ADMIN;
+        $user->save();
+        $role = getRoleByKey($user->role);
+        Auth::login($user, true);
 
         if ($checkExist) {
-            $role = getRoleByKey($user->role);
-
-            return redirect()->route("$role.welcome");
+            return redirect()->route("welcome");
         }
-
         return redirect()->route('register');
-    }
-
-    public function registering(RegisteringRequest $request): RedirectResponse
-    {
-        $password = Hash::make($request->get('password'));
-        $role     = $request->get('role');
-
-        if (auth()->check()) {
-            User::where('id', auth()->user()->id)
-                ->update([
-                    'password' => $password,
-                    'role'     => $role,
-                ]);
-        } else {
-            $user = User::create([
-                'name'     => $request->name,
-                'email'    => $request->email,
-                'password' => $password,
-                'role'     => $role,
-            ]);
-
-            Auth::login($user);
-        }
-
-        $role = getRoleByKey($role);
-
-        return redirect()->route("$role.welcome");
     }
 
     public function logout(Request $request): RedirectResponse
