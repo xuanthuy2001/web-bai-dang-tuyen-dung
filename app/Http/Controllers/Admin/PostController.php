@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\ObjectLanguageTypeEnum;
-use App\Enums\PostCurrencySalaryEnum;
-use App\Enums\PostRemotableEnum;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\ResponseTrait;
-use App\Http\Controllers\SystemConfigController;
-use App\Http\Requests\Post\StoreRequest;
-use App\Imports\PostImport;
-use App\Models\Company;
-use App\Models\ObjectLanguage;
+use Throwable;
 use App\Models\Post;
-use Illuminate\Http\JsonResponse;
+use App\Models\Company;
+use App\Models\Language;
+use App\Imports\PostImport;
 use Illuminate\Http\Request;
+use App\Models\ObjectLanguage;
+use App\Enums\PostRemotableEnum;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Maatwebsite\Excel\Facades\Excel;
-use Throwable;
+use App\Enums\ObjectLanguageTypeEnum;
+use App\Enums\PostCurrencySalaryEnum;
+use App\Http\Controllers\ResponseTrait;
+use App\Http\Requests\Post\StoreRequest;
+use App\Http\Controllers\SystemConfigController;
 
 class PostController extends Controller
 {
@@ -47,10 +48,9 @@ class PostController extends Controller
 
         return view('admin.posts.create', [
             'currencies' => $configs['currencies'],
-            'countries'  => $configs['countries'],
+            'countries' => $configs['countries'],
         ]);
     }
-
 
 
     public function store(StoreRequest $request)
@@ -71,7 +71,6 @@ class PostController extends Controller
                 "number_applicants",
                 "slug",
             ]);
-
             $companyName = $request->get('company');
 
             if (!empty($companyName)) {
@@ -90,14 +89,14 @@ class PostController extends Controller
             if ($request->has('can_parttime')) {
                 $arr['can_parttime'] = 1;
             }
-            $post      = Post::create($arr);
+            $post = Post::create($arr);
             $languages = $request->get('languages');
-
             foreach ($languages as $language) {
+                $language = Language::firstOrCreate(['name' => $language]);
                 ObjectLanguage::create([
-                    'language_id' => $language,
-                    'object_id'   => $post->id,
-                    'type'        => ObjectLanguageTypeEnum::POST,
+                    'object_id' => $post->id,
+                    'language_id' => $language->id,
+                    'object_type' => Post::class,
                 ]);
             }
 
@@ -105,7 +104,7 @@ class PostController extends Controller
             return $this->successResponse();
         } catch (Throwable $e) {
             DB::rollBack();
-            return $this->errorResponse();
+            return $this->errorResponse($e->getMessage());
         }
     }
 }

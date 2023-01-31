@@ -148,10 +148,10 @@ input[data-switch] + label {
                                 <label>Address</label>
                                 <input type="text" name="address" class="form-control">
                             </div>
-                            <div class="form-group col-6">
+                            {{--  <div class="form-group col-6">
                                 <label>Address2</label>
                                 <input type="text" name="address2" class="form-control">
-                            </div>
+                            </div>  --}}
                         </div>
                         <div class="form-row">
                             <div class="form-group col-6">
@@ -233,7 +233,7 @@ input[data-switch] + label {
             let string = '';
             const selectedValue = $("#select-district").val();
             $.each(districts.district, function (index, each) {
-                if (each.pre === 'Quận' || each.pre === 'Huyện') {
+                if (each.pre === 'Quận' || each.pre === 'Huyện'|| each.pre === '') {
                     string += `<option`;
                     if (selectedValue === each.name) {
                         string += ` selected `;

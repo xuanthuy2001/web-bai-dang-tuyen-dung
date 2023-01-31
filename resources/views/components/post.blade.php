@@ -12,19 +12,17 @@
                         </a>
                     </h4>
                     <p class="card-description">
-
+                        {{ $post->location }}
                     </p>
                     <div class="footer" style="display: flex; align-items: center; justify-content: space-between">
-                        <div class="author" >
-                            <a href="#pablo">
-                                <img src="{{$company->logo}}" class="avatar img-raised">
-                                <span>{{$company->name}}</span>
-                                <div class="ripple-container"><div class="ripple ripple-on ripple-out" style="left: 1131px; top: 16561px; background-color: rgb(60, 72, 88); transform: scale(12.75);"></div></div>
-                            </a>
-                        </div>
-                        <button type="button" name="button" class="btn btn-sm btn-success btn-fill btn-round btn-rotate">
-                            <i class="material-icons">refresh</i>
-                        </button>
+                        @isset($company)
+                            <div class="author">
+                                <a href="#">
+                                    <img src="{{ $company->logo }}" class="avatar img-raised">
+                                    <span>{{ $company->name }}</span>
+                                </a>
+                            </div>
+                        @endisset
                     </div>
                 </div>
             </div>
@@ -33,15 +31,16 @@
                 <div class="card-content">
                     <br>
                     <h5 class="card-title">
-                        {{__('frontpage.location');}}
+                        {{ __('frontpage.location') }}
                     </h5>
                     <p class="card-description">
-                       {{$post->location}}
+                        {{ $post->location }}
                     </p>
                     <br>
                     <button type="button" name="button" class="btn btn-simple btn-round btn-rotate">
                         <i class="material-icons">refresh</i> Back...
-                        <div class="ripple-container"></div></button>
+                        <div class="ripple-container"></div>
+                    </button>
 
                 </div>
             </div>
