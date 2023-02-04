@@ -112,4 +112,36 @@ class Post extends Model
 
         return $this->city;
     }
+
+    public function getSalaryAttribute() : string
+    {
+        $val    = $this->currency_salary;
+        $key    = PostCurrencySalaryEnum::getKey($val);
+        $locale = PostCurrencySalaryEnum::getLocaleByVal($val);
+        $format = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
+        $rate   = (double)(Config::getByKey($key));
+        // dd($this->min_salary);
+        if (!is_null($this->min_salary)) {
+            $salary    = $this->min_salary * $rate;
+            $minSalary = $format->formatCurrency($salary, $key);
+        }
+        if (!is_null($this->max_salary)) {
+            $salary    = $this->max_salary * $rate;
+            $maxSalary = $format->formatCurrency($salary, $key);
+        }
+
+        if (!empty($minSalary) && !empty($maxSalary)) {
+            return $minSalary . ' - ' . $maxSalary;
+        }
+
+        if (!empty($minSalary)) {
+            return __('frontpage.from_salary') . ' ' . $minSalary;
+        }
+
+        if (!empty($maxSalary)) {
+            return __('frontpage.to_salary') . ' ' . $maxSalary;
+        }
+
+        return '';
+    }
 }

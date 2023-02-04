@@ -1,12 +1,11 @@
-
 <footer class="footer footer-black footer-big">
     <div class="container">
 
         <div class="content">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>About Us</h5>
-                    <p>Creative Tim is a startup that creates design tools that make the web development process faster and easier. </p> <p>We love the web and care deeply for how users interact with a digital product. We power businesses and individuals to create better looking web projects around the world. </p>
+                    <h5> {{ __('frontpage.About-Us') }}</h5>
+                    {!! html_entity_decode(__('frontpage.About-Us-Content')) !!}
                 </div>
 
                 <div class="col-md-4">
@@ -30,15 +29,21 @@
                 <div class="col-md-4">
                     <h5>Instagram Feed</h5>
                     <div class="gallery-feed">
-                        <img src="../assets/img/faces/card-profile6-square.jpg" class="img img-raised img-rounded" alt="" />
-                        <img src="../assets/img/faces/christian.jpg" class="img img-raised img-rounded" alt="" />
-                        <img src="../assets/img/faces/card-profile4-square.jpg" class="img img-raised img-rounded" alt="" />
-                        <img src="../assets/img/faces/card-profile1-square.jpg" class="img img-raised img-rounded" alt="" />
+                        <img src="../assets/img/faces/card-profile6-square.jpg" class="img img-raised img-rounded"
+                            alt="" />
+                        <img src="../assets/img/faces/christian.jpg" class="img img-raised img-rounded"
+                            alt="" />
+                        <img src="../assets/img/faces/card-profile4-square.jpg" class="img img-raised img-rounded"
+                            alt="" />
+                        <img src="../assets/img/faces/card-profile1-square.jpg" class="img img-raised img-rounded"
+                            alt="" />
 
                         <img src="../assets/img/faces/marc.jpg" class="img img-raised img-rounded" alt="" />
                         <img src="../assets/img/faces/kendall.jpg" class="img img-raised img-rounded" alt="" />
-                        <img src="../assets/img/faces/card-profile5-square.jpg" class="img img-raised img-rounded" alt="" />
-                        <img src="../assets/img/faces/card-profile2-square.jpg" class="img img-raised img-rounded" alt="" />
+                        <img src="../assets/img/faces/card-profile5-square.jpg" class="img img-raised img-rounded"
+                            alt="" />
+                        <img src="../assets/img/faces/card-profile2-square.jpg" class="img img-raised img-rounded"
+                            alt="" />
                     </div>
 
                 </div>
@@ -77,7 +82,10 @@
         </ul>
 
         <div class="copyright pull-right">
-            Copyright &copy; <script>document.write(new Date().getFullYear())</script> Creative Tim All Rights Reserved.
+            Copyright &copy;
+            <script>
+                document.write(new Date().getFullYear())
+            </script> Creative Tim All Rights Reserved.
         </div>
     </div>
 </footer>
